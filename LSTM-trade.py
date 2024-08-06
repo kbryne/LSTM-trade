@@ -73,3 +73,28 @@ plt.show()
 
 test_loss = model.evaluate(X_test, y_test)
 print('Test Loss:', test_loss)
+
+# plot the stock price
+plt.figure(figsize=(12, 8))
+plt.plot(data.index, data['Close'], label='Close price')
+plt.xlabel('Year')
+plt.ylabel('Share price')
+plt.legend()
+plt.show()
+
+# predict the future stock price
+
+# fetching the last 60 days and making a numpy array
+last_sequence = final_data[-60:].reshape(1, 60, final_data.shape[1])
+
+future_predictions = []
+num_days_to_predict = 30
+
+for day in range(num_days_to_predict):
+    # predict the next price
+    next_price = model.predict(last_sequence)
+    # append the predicted price to list of future predicitons
+    future_predictions.append(next_price[0, 0])
+    # update the last sequence to include new predictions
+    last_sequence = np.roll(last_sequence, -1, axis=1)
+    last_sequence[0, -1, :] = next_price
